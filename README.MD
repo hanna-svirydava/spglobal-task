@@ -54,20 +54,20 @@ The current implementation consists of two main classes:
       data uploading, committing and rolling back changes.
 
       Creating transaction (`createTransaction` method), uploading data (`upload` method),
-      and rollback (`rollback` method) through transactions don't block read operation and other transactions.
+      and rollback (`rollback` method) through transactions don't block read operation and other transactions.  
       Only `commit` method blocks the data to provide atomic operation.
       One more advantage: it's hard to call methods in incorrect order.
 
 ## Possible Implementations
 
 1. Instead of `Transaction` class, we could implement four methods (`startTransaction`, `upload`,
-   `commit` and `rollback`) in `DataService` class. Transaction data would be saved using `ThreadLocal`.
+   `commit` and `rollback`) in `DataService` class. Transaction data would be saved using `ThreadLocal`.  
    However, the disadvantage of this approach is impossibility to create multiple transactions in one thread.
 
 2. As option, we also could implement above methods in `DataService` class
    with `createTransaction` method returning unique transaction id, and other methods should get
-   this transaction id like a parameter. Data could be stored in `ConcurrentHashMap` with `transactionId` as key.
+   this transaction id like a parameter. Data could be stored in `ConcurrentHashMap` with `transactionId` as key.  
    The disadvantage: the transactions could block each other if their ids in the same map bucket,
    the leak memory could happen in case if user will not call `commit` or `rollback` methods
-   (we can solve this problem through adding automatic rollback transaction in a timeout).
+   (we can solve this problem through adding automatic rollback transaction in a timeout).  
    The advantage: such approach could be used in REST API.
